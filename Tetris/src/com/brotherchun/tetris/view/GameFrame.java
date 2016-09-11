@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.brotherchun.tetris.entities.Shape;
 import com.brotherchun.tetris.entities.ShapeFactory;
+import com.brotherchun.tetris.utils.Dir;
 import com.brotherchun.tetris.utils.Utils;
 /**
  * 显示界面(控制器)
@@ -34,7 +37,8 @@ public class GameFrame extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setContentPane(new MyJPanel());
 		setVisible(true);
-		
+		//添加键盘监听器
+		addKeyListener(new MyKeyListener());
 		shape=ShapeFactory.getShape();
 		//启动重画线程
 		new Thread(new PaintThread()).start();
@@ -49,7 +53,7 @@ public class GameFrame extends JFrame {
 			Color c=g.getColor();
 			
 			g.setColor(Color.PINK);
-			g.fillRect(0, 0, 10*Utils.SIZE, 20*Utils.SIZE);
+			g.fillRect(0, 0, Utils.MID*Utils.SIZE, Utils.HIGHT*Utils.SIZE);
 			
 			g.setColor(Color.BLACK);
 			g.fillRect(10*Utils.SIZE, 0, Utils.WIDTH*Utils.SIZE,  Utils.HIGHT*Utils.SIZE);
@@ -67,10 +71,40 @@ public class GameFrame extends JFrame {
 			while(!pause){
 				repaint();
 				try {
-					Thread.sleep(150);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+		
+	}
+	//自定义键盘监听器
+	private class MyKeyListener extends KeyAdapter{
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			super.keyPressed(e);
+			int code=e.getKeyCode();
+			switch (code) {
+			case KeyEvent.VK_LEFT:
+				if(shape.isMove(Utils.LEFT))
+					shape.left();
+				break;
+			case KeyEvent.VK_RIGHT:
+				if(shape.isMove(Utils.RIGHT))
+					shape.right();
+				break;
+			case KeyEvent.VK_UP:
+				if(shape.isMove(Utils.ROTATE))
+					shape.rotate();
+				break;
+			case KeyEvent.VK_DOWN:
+				if(shape.isMove(Utils.DOWN))
+					shape.down();
+				break;
+			default:
+				break;
 			}
 		}
 		

@@ -6,4 +6,8 @@ public class Ground {
 	public void draw(Graphics g){
 		
 	}
+	
+	public void acccept(Shape shape){
+		
+	} 
 }
